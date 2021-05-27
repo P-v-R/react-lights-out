@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`watches snapshot 1`] = `
+<div>
+  <table>
+    <tbody>
+      <tr>
+        <td
+          class="Cell Cell-lit"
+        />
+      </tr>
+    </tbody>
+  </table>
+</div>
+`;

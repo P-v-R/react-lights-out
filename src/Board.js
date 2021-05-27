@@ -44,15 +44,25 @@ function Board({ nrows = 5, ncols = 5, chanceLightStartsOn = .25 }) {
     return initialBoard;
   }
 
+  /** Determines if all lights out */
   function hasWon() {
-    for (let row of board) {
-      if (row.includes(true)) {
-        return false;
-      }
-    }
-    return true;
+    // TODO: use "every"
+    return board.every(r => r.every(c => c === false));
+
+    // for (let row of board) {
+    //   if (row.includes(true)) {
+    //     return false;
+    //   }
+    // }
+    // return true;
   }
 
+  /** Function receives cell coordinate of clicked cell
+   *  
+   *  Cell clicked and the cells around it's touching flipped (top, bottom, left, right)
+   * 
+   *  Returns new game board with updated cells lit/unlit
+   */
   function flipCellsAround(coord) {
     setBoard(oldBoard => {
       const [y, x] = coord.split("-").map(Number);
@@ -66,18 +76,46 @@ function Board({ nrows = 5, ncols = 5, chanceLightStartsOn = .25 }) {
       };
 
       // TODO: Make a (deep) copy of the oldBoard
+      const boardCopy = oldBoard.map(r => [...r]);
 
       // TODO: in the copy, flip this cell and the cells around it
+      flipCell(y, x, boardCopy);
+      flipCell(y, x - 1, boardCopy);
+      flipCell(y, x + 1, boardCopy);
+      flipCell(y - 1, x, boardCopy);
+      flipCell(y + 1, x, boardCopy);
 
       // TODO: return the copy
+      return boardCopy;
     });
   }
 
   // if the game is won, just show a winning msg & render nothing else
+  if (hasWon()) {
+    return <div>You win!</div>;
+  }
 
-  // TODO
+  // make HTML table board
+  let htmlBoard = [];
+  // TODO: use y/x or rowIdx/colIdx
+  for (let rowIdx = 0; rowIdx < nrows; rowIdx++) {
+    let newRow = [];
+    for (let colIdx = 0; colIdx < ncols; colIdx++) {
+      let coord = `${rowIdx}-${colIdx}`;
+      newRow.push(
+      <Cell 
+        key={coord} 
+        isLit={board[rowIdx][colIdx]} 
+        flipCellsAroundMe={() => flipCellsAround(coord)}/>)
+    }
+    htmlBoard.push(<tr key={rowIdx}>{newRow}</tr>);
+  }
 
-  // make table board
+  return (
+    <table className="Board">
+      <tbody>{htmlBoard}</tbody>
+    </table>
+  )
 
   // TODO
 }
